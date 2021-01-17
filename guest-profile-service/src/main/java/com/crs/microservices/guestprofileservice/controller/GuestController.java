@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ public class GuestController {
 	private GuestService service;
 
 	@PostMapping("/createGuest")
+	@PreAuthorize("hasRole('GUEST')")
 	public ResponseEntity<IGuest> addNewGuest(@RequestBody IGuest guest) {
 		IGuest response = service.addNewGuest(guest);
 		return ResponseEntity.created(URI.create(String.format("/guest/" + response.getGuestId()))).body(response);
