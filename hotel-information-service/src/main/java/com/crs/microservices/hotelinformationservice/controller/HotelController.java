@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ public class HotelController {
 	private HotelService service;
 
 	@PostMapping("/addHotel")
+	@PreAuthorize("hasRole('HOTEL')")
 	public ResponseEntity<IHotel> addNewHotel(@RequestBody Hotel hotel) {
 		IHotel response = service.addNewHotel(hotel);
 		URI uri = URI.create(String.format("/hotel/%s", response.getHotelId()));
@@ -36,6 +38,7 @@ public class HotelController {
 	}
 
 	@PostMapping("/reservation")
+	@PreAuthorize("hasRole('HOTEL')")
 	public String reservationRequest(@RequestBody IReservation reservation, @RequestParam("hotelId") Long hotelId) {
 		return service.reservationRequest(hotelId, reservation);
 	}
