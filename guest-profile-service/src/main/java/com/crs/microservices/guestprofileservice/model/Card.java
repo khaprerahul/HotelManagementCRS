@@ -1,31 +1,18 @@
 package com.crs.microservices.guestprofileservice.model;
 
-public class Card implements ICard {
-	private String cardNumber;
-	private String expMonth;
-	private String expYear;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-	public String getCardNumber() {
-		return cardNumber;
-	}
+@JsonDeserialize(as = CardImpl.class)
+public interface Card {
+    public String getCardNumber();
 
-	public void setCardNumber(String cardNumber) {
-		this.cardNumber = cardNumber;
-	}
+    public void setCardNumber(String cardNumber);
 
-	public String getExpMonth() {
-		return expMonth;
-	}
+    public String getExpMonth();
 
-	public void setExpMonth(String expMonth) {
-		this.expMonth = expMonth;
-	}
+    public void setExpMonth(String expMonth);
 
-	public String getExpYear() {
-		return expYear;
-	}
+    public String getExpYear();
 
-	public void setExpYear(String expYear) {
-		this.expYear = expYear;
-	}
+    public void setExpYear(String expYear);
 }

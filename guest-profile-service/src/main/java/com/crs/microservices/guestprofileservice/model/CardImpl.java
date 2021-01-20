@@ -1,9 +1,7 @@
-package com.crs.microservices.guestprofileservice.dto;
+package com.crs.microservices.guestprofileservice.model;
 
-import javax.persistence.Embeddable;
 
-@Embeddable
-public class CardDTO {
+public class CardImpl implements Card {
     private String cardNumber;
     private String expMonth;
     private String expYear;
@@ -30,5 +28,14 @@ public class CardDTO {
 
     public void setExpYear(String expYear) {
         this.expYear = expYear;
+    }
+
+    public CardImpl(String cardNumber, String expMonth, String expYear) {
+        this.cardNumber = cardNumber;
+        this.expMonth = expMonth;
+        this.expYear = expYear;
+    }
+
+    public CardImpl() {
     }
 }

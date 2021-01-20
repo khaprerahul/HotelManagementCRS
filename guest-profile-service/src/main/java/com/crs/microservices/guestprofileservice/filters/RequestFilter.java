@@ -1,32 +1,27 @@
-package com.crs.microservices.guestprofileservice.filter;
+package com.crs.microservices.guestprofileservice.filters;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.crs.microservices.guestprofileservice.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.crs.microservices.guestprofileservice.jwt.JWTUtil;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
-@Component
+@Service
 public class RequestFilter extends OncePerRequestFilter
 {
     @Autowired
-    private JWTUtil jwtUtil;
+    private JwtUtil jwtUtil;
 
     private final String BEARER = "Bearer ";
 
@@ -39,16 +34,15 @@ public class RequestFilter extends OncePerRequestFilter
             grantedAuthorities = jwtUtil.extractAuthorities(token);
         }
 
-        Map<String, String> authority = (Map<String, String>) ((ArrayList)grantedAuthorities).get(0);
-
-        List<GrantedAuthority> authorities =  new ArrayList<>();
-
-        for(Map.Entry<String, String> entry : authority.entrySet()){
-            SimpleGrantedAuthority simpleGrantedAuthority =  new SimpleGrantedAuthority(entry.getValue());
-            authorities.add(simpleGrantedAuthority);
-        }
-
         if(grantedAuthorities != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            Map<String, String> authority = (Map<String, String>) ((ArrayList)grantedAuthorities).get(0);
+
+            List<GrantedAuthority> authorities =  new ArrayList();
+
+            for(Map.Entry<String, String> entry : authority.entrySet()){
+                SimpleGrantedAuthority simpleGrantedAuthority =  new SimpleGrantedAuthority(entry.getValue());
+                authorities.add(simpleGrantedAuthority);
+            }
             UsernamePasswordAuthenticationToken token =  new UsernamePasswordAuthenticationToken(null, null, authorities);
             token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(token);

@@ -1,84 +1,41 @@
 package com.crs.microservices.guestprofileservice.model;
 
-import java.util.ArrayList;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.List;
 
-public class Guest implements IGuest {
-	private Long guestId;
-	private String name;
-	private String email;
-	private String contactNumber;
-	private int ratting;
-	private List<Long> reservations = new ArrayList<>();
-	// private List<IStay> stayList = new ArrayList<>();
-	private List<ICard> cards = new ArrayList<>();
+@JsonDeserialize(as = GuestImpl.class)
+public interface Guest {
 
-	public List<Long> getReservations() {
-		return reservations;
-	}
+    public List<Long> getReservations();
 
-	public void setReservations(List<Long> reservations) {
-		this.reservations = reservations;
-	}
+    public void setReservations(List<Long> reservations);
 
-	public List<ICard> getCards() {
-		return cards;
-	}
+    public Long getGuestId();
 
-	public void setCards(List<ICard> cards) {
-		this.cards = cards;
-	}
+    public void setGuestId(Long guestId);
 
-	/*
-	 * public List<IStay> getStayList() { return stayList; }
-	 * 
-	 * public void setStayList(List<IStay> stayList) { this.stayList = stayList; }
-	 */
+    public String getName();
 
-	public Long getGuestId() {
-		return guestId;
-	}
+    public void setName(String name);
 
-	public void setGuestId(Long guestId) {
-		this.guestId = guestId;
-	}
+    public String getEmail();
 
-	public String getName() {
-		return name;
-	}
+    public void setEmail(String email);
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getContactNumber();
 
-	public String getEmail() {
-		return email;
-	}
+    public void setContactNumber(String contactNumber);
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public int getRating();
 
-	public String getContactNumber() {
-		return contactNumber;
-	}
+    public void setRating(int rating);
 
-	public void setContactNumber(String contactNumber) {
-		this.contactNumber = contactNumber;
-	}
+    /*public List<IStay> getStayList();
 
-	public int getRatting() {
-		return ratting;
-	}
+    public void setStayList(List<IStay> stayList);*/
 
-	public void setRatting(int ratting) {
-		this.ratting = ratting;
-	}
+    public List<Card> getCards();
 
-	@Override
-	public String toString() {
-		return "Guest{" + "guestId=" + guestId + ", name='" + name + '\'' + ", email='" + email + '\''
-				+ ", contactNumber='" + contactNumber + '\'' + ", ratting=" + ratting + ", reservations=" + reservations
-				+ ", cards=" + cards + '}';
-	}
+    public void setCards(List<Card> cards);
 }

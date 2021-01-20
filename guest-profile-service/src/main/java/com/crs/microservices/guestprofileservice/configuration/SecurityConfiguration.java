@@ -1,5 +1,7 @@
 package com.crs.microservices.guestprofileservice.configuration;
 
+//import com.guest.filters.RequestFilter;
+import com.crs.microservices.guestprofileservice.filters.RequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -8,15 +10,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
-public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private com.crs.microservices.guestprofileservice.filter.RequestFilter filter;
+   @Autowired
+    private RequestFilter filter;
 
-	@Override
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests()//.antMatchers("/guest").hasRole("ADMIN")
+                .authorizeRequests()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);;
