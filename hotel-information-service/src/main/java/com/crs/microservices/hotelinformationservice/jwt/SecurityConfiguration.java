@@ -1,8 +1,8 @@
 package com.crs.microservices.hotelinformationservice.jwt;
 
-import com.crs.microservices.hotelinformationservice.jwt.RequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,4 +24,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
     }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(AUTH_WHITELIST);
+    }
+
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
 }

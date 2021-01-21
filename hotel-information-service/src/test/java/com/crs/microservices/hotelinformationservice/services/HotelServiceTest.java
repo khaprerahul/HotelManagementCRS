@@ -1,13 +1,13 @@
 package com.crs.microservices.hotelinformationservice.services;
 
 
+import com.crs.microservices.hotelinformationservice.model.*;
 import com.crs.microservices.hotelinformationservice.entity.AddressEntity;
 import com.crs.microservices.hotelinformationservice.entity.HotelEntity;
 import com.crs.microservices.hotelinformationservice.entity.ReservationEntity;
 import com.crs.microservices.hotelinformationservice.entity.RoomEntity;
-import com.crs.microservices.hotelinformationservice.model.*;
-import com.crs.microservices.hotelinformationservice.repository.HotelRepositoryImpl;
-import com.crs.microservices.hotelinformationservice.repository.ReservationRepositoryImpl;
+import com.crs.microservices.hotelinformationservice.repository.implementation.HotelRepositoryImpl;
+import com.crs.microservices.hotelinformationservice.repository.implementation.ReservationRepositoryImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import static org.mockito.BDDMockito.given;
 public class HotelServiceTest {
 
     @Autowired
-    private HotelService hotelService;
+    private IHotelService hotelService;
 
     @MockBean
     private HotelRepositoryImpl hotelRepository;
@@ -40,28 +40,21 @@ public class HotelServiceTest {
     @MockBean
     private ReservationRepositoryImpl reservationRepository;
 
-    private Address address = new AddressImpl(1L, "Nagar Pune Road", "Kedgaon", "Ahmednagar","414001");
-    private IHotel hotel = new Hotel(1L, "Hotel Yash Grand", "0241-2411429",2, address);
-    private Reservation reservation = new ReservationImpl(new RoomImpl(),1L, new Date(), new Date(), 1L, "REQUESTED", "KING");
+    private Address address = new AddressImpl(1L, "Lane no1", "Hanuman Nagar", "Pune","412308");
+    private IHotel hotel = new Hotel(1L, "City Inn", "1234567890",3, address);
+    private Reservation reservation = new ReservationImpl(new RoomImpl(),1L, new Date(), new Date(), 1L, ReservationStatus.REQUEST, "SINGLE");
 
     private AddressEntity addressEntity =  new AddressEntity(1L, "Lane no1", "Hanuman Nagar", "Pune","412308");
     private HotelEntity hotelEntity =  new HotelEntity(1L, "City Inn", "1234567890",3, addressEntity);
-    private RoomEntity roomEntity =  new RoomEntity(102, 1000, RoomType.KING);
-    private ReservationEntity reservationEntity =  new ReservationEntity(new RoomEntity(),1L, new Date(), new Date(), 1L, "REQUEST", "KING");
-    private ReservationEntity reservationEntity2 =  new ReservationEntity(new RoomEntity(),2L, new Date(), new Date(), 1L, "REQUEST", "KING");
+    private RoomEntity roomEntity =  new RoomEntity(102, 1000, RoomType.SINGLE);
+    private ReservationEntity reservationEntity =  new ReservationEntity(new RoomEntity(),1L, new Date(), new Date(), 1L, "REQUEST", "SINGLE");
+    private ReservationEntity reservationEntity2 =  new ReservationEntity(new RoomEntity(),2L, new Date(), new Date(), 1L, "REQUEST", "SINGLE");
 
     @Test
     public void addNewHotel() {
         given(hotelRepository.save(any())).willReturn(hotelEntity);
-        IHotel hotel1 = hotelService.addNewHotel(hotel);
-        assertEquals(hotel1.getHotelId(), hotelEntity.getHotelId());
-    }
-
-    @Test
-    public void confirmReservation() {
-        given(reservationRepository.findReservationById(anyLong())).willReturn(reservationEntity);
-        Reservation reservation = hotelService.confirmReservation(1L);
-        assertTrue(reservation.getState().equals("CONFIRMED"));
+        IHotel iHotel = hotelService.addNewHotel(hotel);
+        assertEquals(iHotel.getHotelId(), hotelEntity.getHotelId());
     }
 
     @Test
@@ -77,32 +70,33 @@ public class HotelServiceTest {
     }
 
     @Test
-    public void cancelingReservationTest() {
+    public void cancelReservation() {
+        reservationEntity.setState("CANCELLED");
         given(reservationRepository.findReservationById(anyLong())).willReturn(reservationEntity);
-        Reservation reservation = hotelService.cancelReservation(1L, 1L);
+        this.reservation.setState(ReservationStatus.CANCELLED);
+        Reservation reservation = hotelService.updateReservation(1l, this.reservation);
         assertTrue(reservation.getReservationId().equals(1L));
-        assertTrue(reservation.getState().equals("CANCELLED"));
+        assertTrue(reservation.getState().equals(ReservationStatus.CANCELLED));
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void cancelReservationIfEntityIsNotFound() {
+    public void cancelReservation_EntityNotFound() {
         given(reservationRepository.findReservationById(anyLong())).willThrow(new EntityNotFoundException("Entity Not found"));
-        Reservation reservation = hotelService.cancelReservation(1L, 1L);
-        assertTrue(reservation.getReservationId().equals(1L));
-        assertTrue(reservation.getState().equals("CANCELLED"));
+        reservation.setState(ReservationStatus.CANCELLED);
+        hotelService.updateReservation(1l, reservation);
     }
 
     @Test
-    public void reservationRequestedTest() {
+    public void reservationRequest() {
         hotelEntity.setReservations(new ArrayList<>());
         hotelEntity.getRooms().add(roomEntity);
         given(hotelRepository.findById(anyLong())).willReturn(hotelEntity);
         Reservation reservation = hotelService.reservationRequest(1L, this.reservation);
-        assertTrue(reservation.getState().equals("REQUESTED"));
+        assertTrue(reservation.getState().equals(ReservationStatus.REQUEST));
     }
 
     @Test
-    public void getListOfReservationsForaHotel() {
+    public void getAllReservationsByHotelId() {
         given((hotelRepository.findById(anyLong()))).willReturn(hotelEntity);
         hotelEntity.getReservations().add(reservationEntity2);
         hotelEntity.getReservations().add(reservationEntity);
@@ -112,16 +106,31 @@ public class HotelServiceTest {
     }
 
     @Test
-    public void getHotelByHotelId() {
+    public void getHotels() {
+    }
+
+    @Test
+    public void getHotelById() {
         given(hotelRepository.findById(anyLong())).willReturn(hotelEntity);
         IHotel iHotel = hotelService.getHotelById(1L);
         assertTrue(iHotel.getHotelId().equals(1L));
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void getHotelByIdIfNotFound() {
+    public void getHotelById_EntityNotFound() {
         given(hotelRepository.findById(anyLong())).willThrow(new EntityNotFoundException("Entity Not found"));
         hotelService.getHotelById(1L);
     }
 
+    @Test
+    public void searchHotels() {
+        AddressEntity addressEntity1 =  new AddressEntity(2L, "Lane no1", "Hanuman Nagar", "Kolhapur","412308");
+        HotelEntity hotelEntity1 =  new HotelEntity(2L, "City Inn", "1234567890",3, addressEntity1);
+        given(hotelRepository.getAllHotels()).willReturn(Arrays.asList(hotelEntity, hotelEntity1));
+        List<IHotel> hotels = hotelService.searchHotelsByCity("Pune");
+
+        assertEquals(hotels.size(), 1);
+        assertFalse(hotels.stream().filter(h -> !h.getAddress().getCity().equals("Pune")).findFirst().isPresent());
+
+    }
 }

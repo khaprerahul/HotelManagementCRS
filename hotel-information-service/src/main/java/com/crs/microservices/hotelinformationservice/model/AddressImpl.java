@@ -1,5 +1,4 @@
 package com.crs.microservices.hotelinformationservice.model;
-import com.crs.microservices.hotelinformationservice.model.Address;
 
 public class AddressImpl implements Address {
 

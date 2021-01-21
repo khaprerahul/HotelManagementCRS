@@ -1,28 +1,20 @@
-package com.crs.microservices.hotelinformationservice.mapper;
+package com.crs.microservices.hotelinformationservice.mapper.implementation;
 
 import com.crs.microservices.hotelinformationservice.entity.AddressEntity;
 import com.crs.microservices.hotelinformationservice.entity.HotelEntity;
 import com.crs.microservices.hotelinformationservice.entity.ReservationEntity;
 import com.crs.microservices.hotelinformationservice.entity.RoomEntity;
-import com.crs.microservices.hotelinformationservice.model.Address;
-import com.crs.microservices.hotelinformationservice.model.IHotel;
-import com.crs.microservices.hotelinformationservice.model.Reservation;
-import com.crs.microservices.hotelinformationservice.model.Room;
-import com.crs.microservices.hotelinformationservice.model.AddressImpl;
-import com.crs.microservices.hotelinformationservice.model.Hotel;
-import com.crs.microservices.hotelinformationservice.model.ReservationImpl;
-import com.crs.microservices.hotelinformationservice.model.RoomImpl;
-
+import com.crs.microservices.hotelinformationservice.model.*;
+import com.crs.microservices.hotelinformationservice.mapper.IMapper;
 
 import java.util.stream.Collectors;
-
-public class MapperImpl implements Mapper {
+public class Mapper implements IMapper {
     @Override
-    public HotelEntity mapHotelToHotelEntity(IHotel hotel) {
-        HotelEntity hotelEntity = new HotelEntity();
-        hotelEntity.setAddress(mapAddressToAddressEntity(hotel.getAddress()));
-        hotelEntity.setRooms(hotel.getRooms().stream().map(this::mapRoomToRoomEntity).collect(Collectors.toList()));
-        hotelEntity.setReservations(hotel.getReservations().stream().map(this::mapReservationToReservationEntity).collect(Collectors.toList()));
+    public HotelEntity mapIHotelToHotelDTO(IHotel hotel) {
+        HotelEntity hotelEntity =  new HotelEntity();
+        hotelEntity.setAddress(mapIAddressToAddressDTO(hotel.getAddress()));
+        hotelEntity.setRooms(hotel.getRooms().stream().map(this::mapIRoomToRoomDTO).collect(Collectors.toList()));
+        hotelEntity.setReservations(hotel.getReservations().stream().map(this::mapIReservationToReservationDTO).collect(Collectors.toList()));
         hotelEntity.setHotelId(hotel.getHotelId());
         hotelEntity.setName(hotel.getName());
         hotelEntity.setPhoneNumber(hotel.getPhoneNumber());
@@ -30,19 +22,39 @@ public class MapperImpl implements Mapper {
         return hotelEntity;
     }
 
-    public ReservationEntity mapReservationToReservationEntity(Reservation reservation) {
+    public ReservationEntity mapIReservationToReservationDTO(Reservation reservation){
         ReservationEntity reservationEntity = new ReservationEntity();
         reservationEntity.setReservationId(reservation.getReservationId());
-        reservationEntity.setState(reservation.getState());
+        reservationEntity.setState(reservation.getState().toString());
         reservationEntity.setFromDate(reservation.getFromDate());
         reservationEntity.setToDate(reservation.getToDate());
         reservationEntity.setGuestId(reservation.getGuestId());
-        reservationEntity.setRoom(mapRoomToRoomEntity(reservation.getRoom()));
+        reservationEntity.setRoom( mapIRoomToRoomDTO(reservation.getRoom()));
         return reservationEntity;
     }
 
-    private RoomEntity mapRoomToRoomEntity(Room room) {
-        RoomEntity roomEntity = new RoomEntity();
+    /*@Override
+    public com.hotel.model.IGuest mapGuestToIGuest(com.hotel.proxy.model.IGuest guest) {
+        com.hotel.model.IGuest iGuest =  new Guest();
+        iGuest.setName(guest.getName());
+        iGuest.setGuestId(guest.getGuestId());
+        iGuest.setContactNumber(guest.getContactNumber());
+        iGuest.setEmail(guest.getEmail());
+        return iGuest;
+    }*/
+
+
+    /*private GuestDTO mapIGuestToGuestDTO(IGuest iGuest){
+        GuestDTO guestDTO = new GuestDTO();
+        guestDTO.setGuestId(iGuest.getGuestId());
+        guestDTO.setName(iGuest.getName());
+        guestDTO.setContactNumber(iGuest.getContactNumber());
+        return guestDTO;
+    }*/
+
+    private RoomEntity mapIRoomToRoomDTO(Room room)
+    {
+        RoomEntity roomEntity =  new RoomEntity();
         roomEntity.setRoomNo(room.getRoomNo());
         roomEntity.setRoomType(room.getRoomType());
         roomEntity.setRentPerNight(room.getRentPerNight());
@@ -50,8 +62,8 @@ public class MapperImpl implements Mapper {
         return roomEntity;
     }
 
-    private AddressEntity mapAddressToAddressEntity(Address address) {
-        AddressEntity addressEntity = new AddressEntity();
+    private AddressEntity mapIAddressToAddressDTO(Address address) {
+        AddressEntity addressEntity =  new AddressEntity();
         addressEntity.setAddressId(address.getAddressId());
         addressEntity.setArea(address.getArea());
         addressEntity.setCity(address.getCity());
@@ -61,8 +73,8 @@ public class MapperImpl implements Mapper {
     }
 
     @Override
-    public IHotel mapHotelEntityToHotel(HotelEntity hotelEntity) {
-        IHotel iHotel = new Hotel();
+    public IHotel mapHotelDTOToIHotel(HotelEntity hotelEntity) {
+        IHotel iHotel =  new Hotel();
 
         iHotel.setHotelId(hotelEntity.getHotelId());
         iHotel.setName(hotelEntity.getName());
@@ -70,12 +82,12 @@ public class MapperImpl implements Mapper {
         iHotel.setStarRatting(hotelEntity.getStarRatting());
         iHotel.setAddress(mapAddressDTOToIAddress(hotelEntity.getAddress()));
         iHotel.setRooms(hotelEntity.getRooms().stream().map(this::mapRoomDTOToIRoom).collect(Collectors.toList()));
-        iHotel.setReservations(hotelEntity.getReservations().stream().map(this::mapReservationEntityToReservation).collect(Collectors.toList()));
+        iHotel.setReservations(hotelEntity.getReservations().stream().map(this::mapReservationDTOToIReservation).collect(Collectors.toList()));
         //iHotel.setReservationsByDate(hotelDTO.getReservationsByDate());
         return iHotel;
     }
 
-    private Address mapAddressDTOToIAddress(AddressEntity addressEntity) {
+    private Address mapAddressDTOToIAddress(AddressEntity addressEntity){
         Address address = new AddressImpl();
         address.setAddressId(addressEntity.getAddressId());
         address.setArea(addressEntity.getArea());
@@ -85,9 +97,9 @@ public class MapperImpl implements Mapper {
         return address;
     }
 
-    private Room mapRoomDTOToIRoom(RoomEntity roomEntity) {
+    private Room mapRoomDTOToIRoom(RoomEntity roomEntity){
         Room room = new RoomImpl();
-        if (roomEntity != null) {
+        if(roomEntity != null) {
             room.setRoomNo(roomEntity.getRoomNo());
             room.setRentPerNight(roomEntity.getRentPerNight());
             room.setRoomType(roomEntity.getRoomType());
@@ -105,10 +117,10 @@ public class MapperImpl implements Mapper {
         return iGuest;
     }*/
 
-    public Reservation mapReservationEntityToReservation(ReservationEntity reservationEntity) {
+    public Reservation mapReservationDTOToIReservation(ReservationEntity reservationEntity){
         Reservation reservation = new ReservationImpl();
         reservation.setReservationId(reservationEntity.getReservationId());
-        reservation.setState(reservationEntity.getState());
+        reservation.setState(ReservationStatus.valueOf(reservationEntity.getState()));
         reservation.setGuestId(reservationEntity.getGuestId());
         //iReservation.setGuest(mapGuestDTOToIGuest(reservationDTO.getGuest()));
         reservation.setRoom(mapRoomDTOToIRoom(reservationEntity.getRoom()));

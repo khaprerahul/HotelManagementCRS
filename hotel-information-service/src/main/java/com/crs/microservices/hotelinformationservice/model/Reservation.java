@@ -7,8 +7,8 @@ import java.util.Date;
 @JsonDeserialize(as = ReservationImpl.class)
 public interface Reservation {
     java.lang.Long getReservationId();
-    void setState(String state);
-    String getState();
+    void setState(ReservationStatus state);
+    ReservationStatus getState();
     public Room getRoom() ;
     public void setRoom(Room room);
     public Long getGuestId();

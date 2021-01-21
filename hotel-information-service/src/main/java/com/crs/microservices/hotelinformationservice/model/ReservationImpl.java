@@ -10,7 +10,7 @@ public class ReservationImpl implements Reservation {
     private Date fromDate;
     private Date toDate;
     private Long reservationId;
-    private String state;
+    private ReservationStatus state;
     private String roomType;
 
     public String getRoomType() {
@@ -21,11 +21,11 @@ public class ReservationImpl implements Reservation {
         this.roomType = roomType;
     }
 
-    public String getState() {
+    public ReservationStatus getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(ReservationStatus state) {
         this.state = state;
     }
 
@@ -83,7 +83,7 @@ public class ReservationImpl implements Reservation {
         return Objects.hash(reservationId);
     }
 
-    public ReservationImpl(Room room, Long guestId, Date fromDate, Date toDate, Long reservationId, String state, String roomType) {
+    public ReservationImpl(Room room, Long guestId, Date fromDate, Date toDate, Long reservationId, ReservationStatus state, String roomType) {
         this.room = room;
         this.guestId = guestId;
         this.fromDate = fromDate;
@@ -91,5 +91,18 @@ public class ReservationImpl implements Reservation {
         this.reservationId = reservationId;
         this.state = state;
         this.roomType = roomType;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "room=" + room +
+                ", guestId=" + guestId +
+                ", fromDate=" + fromDate +
+                ", toDate=" + toDate +
+                ", reservationId=" + reservationId +
+                ", state='" + state + '\'' +
+                ", roomType='" + roomType + '\'' +
+                '}';
     }
 }

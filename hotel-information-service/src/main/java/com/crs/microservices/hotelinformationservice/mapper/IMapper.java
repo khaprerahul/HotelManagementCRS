@@ -5,14 +5,14 @@ import com.crs.microservices.hotelinformationservice.entity.ReservationEntity;
 import com.crs.microservices.hotelinformationservice.model.IHotel;
 import com.crs.microservices.hotelinformationservice.model.Reservation;
 
-public interface Mapper {
-    HotelEntity mapHotelToHotelEntity(IHotel hotel);
+public interface IMapper {
+    HotelEntity mapIHotelToHotelDTO(IHotel hotel);
 
-    IHotel mapHotelEntityToHotel(HotelEntity hotelEntity);
+    IHotel mapHotelDTOToIHotel(HotelEntity hotelEntity);
 
-    Reservation mapReservationEntityToReservation(ReservationEntity reservationEntity);
+    Reservation mapReservationDTOToIReservation(ReservationEntity reservationEntity);
 
-    ReservationEntity mapReservationToReservationEntity(Reservation reservation);
+    ReservationEntity mapIReservationToReservationDTO(Reservation reservation);
 
     //IGuest mapGuestToIGuest(com.hotel.proxy.model.IGuest guest);
 }

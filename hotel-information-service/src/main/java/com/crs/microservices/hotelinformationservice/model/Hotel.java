@@ -1,10 +1,5 @@
 package com.crs.microservices.hotelinformationservice.model;
 
-import com.crs.microservices.hotelinformationservice.model.Address;
-import com.crs.microservices.hotelinformationservice.model.IHotel;
-import com.crs.microservices.hotelinformationservice.model.Reservation;
-import com.crs.microservices.hotelinformationservice.model.Room;
-
 import java.util.*;
 
 
@@ -79,5 +74,19 @@ public class Hotel implements IHotel {
         this.phoneNumber = phoneNumber;
         this.starRatting = starRatting;
         this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Hotel{" +
+                "hotelId=" + hotelId +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", starRatting=" + starRatting +
+                ", address=" + address +
+                ", rooms=" + rooms +
+                ", reservations=" + reservations +
+                ", reservationsByDate=" + reservationsByDate +
+                '}';
     }
 }

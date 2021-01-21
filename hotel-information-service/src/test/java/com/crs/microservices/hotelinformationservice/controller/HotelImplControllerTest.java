@@ -1,14 +1,8 @@
 package com.crs.microservices.hotelinformationservice.controller;
 
-import com.crs.microservices.hotelinformationservice.model.Address;
-import com.crs.microservices.hotelinformationservice.model.Reservation;
-import com.crs.microservices.hotelinformationservice.model.AddressImpl;
-import com.crs.microservices.hotelinformationservice.model.Hotel;
-import com.crs.microservices.hotelinformationservice.model.ReservationImpl;
-import com.crs.microservices.hotelinformationservice.model.RoomImpl;
-import com.crs.microservices.hotelinformationservice.services.HotelService;
+import com.crs.microservices.hotelinformationservice.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.crs.microservices.hotelinformationservice.model.IHotel;
+import com.crs.microservices.hotelinformationservice.services.IHotelService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,19 +28,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HotelControllerTest {
+public class HotelImplControllerTest {
 
     @MockBean
-    private HotelService service;
+    private IHotelService service;
 
     private MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext context;
 
-    private Address address = new AddressImpl(1L, "Nagar Pune Road", "KedGaon", "Ahmednagar","414001");
-    private IHotel hotel = new Hotel(1L, "Hotel Yash Grand", "0241-2411429",2, address);
-    private Reservation reservation = new ReservationImpl(new RoomImpl(),1L, new Date(), new Date(), 1L, "REQUESTED", "KING");
+    private Address address = new AddressImpl(1L, "Lane no1", "Hanuman Nagar", "Pune","412308");
+    private IHotel hotel = new Hotel(1L, "City Inn", "1234567890",3, address);
+    private Reservation reservation = new ReservationImpl(new RoomImpl(),1L, new Date(), new Date(), 1L, ReservationStatus.REQUEST, "SINGLE");
 
     @Before
     public void setUp() {
@@ -61,7 +55,7 @@ public class HotelControllerTest {
         given(service.addNewHotel(any())).willReturn(hotel);
         ObjectMapper mapper =  new ObjectMapper();
         String json =  mapper.writeValueAsString(hotel);
-        mockMvc.perform(post("/hotel")
+        mockMvc.perform(post("/hotels")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(json)
                         .with(user("Hotel")
@@ -75,9 +69,8 @@ public class HotelControllerTest {
         given(service.reservationRequest(anyLong(), any())).willReturn(reservation);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(reservation);
-        mockMvc.perform(post("/hotel/reservation")
+        mockMvc.perform(post("/hotels/{hotelId}/reservation", "1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("hotelId", "1")
                 .content(json)
                 .with(user("Guest")
                         .password("password")
@@ -90,7 +83,7 @@ public class HotelControllerTest {
         given(service.reservationRequest(anyLong(), any())).willReturn(reservation);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(reservation);
-        mockMvc.perform(post("/hotel/reservation")
+        mockMvc.perform(post("/hotels/1/reservation")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param("hotelId", "1")
                 .content(json)
@@ -101,23 +94,9 @@ public class HotelControllerTest {
     }
 
     @Test
-    public void cancelReservation() throws Exception {
-        given(service.cancelReservation(anyLong(),anyLong())).willReturn(reservation);
-        mockMvc.perform(patch("/hotel/cancelReservation")
-                        .param("hotelId", "1")
-                        .param("reservationId","1")
-                        .with(user("Guest")
-                            .password("password")
-                            .roles("GUEST")))
-                        .andExpect(status().isAccepted());
-
-    }
-
-    @Test
     public void getAllReservationsByHotelId() throws Exception {
         given(service.getAllReservationsByHotelId(anyLong())).willReturn(Arrays.asList(reservation));
-        mockMvc.perform(get("/hotel/reservationsByHotel")
-                .param("hotelId", "1")
+        mockMvc.perform(get("/hotels/1/reservations")
                 .with(user("Hotel")
                         .password("password")
                         .roles("HOTEL")))
@@ -127,9 +106,7 @@ public class HotelControllerTest {
     @Test
     public void getReservationByGuest() throws Exception {
         given(service.getReservationByGuestIdPerHotel(anyLong(),anyLong())).willReturn(Arrays.asList(reservation));
-        mockMvc.perform(get("/hotel/reservationsByHotel")
-                .param("hotelId", "1")
-                .param("guestId","1")
+        mockMvc.perform(get("/hotels/{hotelId}/{guestId}/reservations","1","1")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .with(user("Hotel")
                         .password("password")
@@ -138,11 +115,14 @@ public class HotelControllerTest {
     }
 
     @Test
-    public void confirmReservation() throws Exception {
-        given(service.confirmReservation(anyLong())).willReturn(reservation);
-        mockMvc.perform(patch("/hotel/confirmReservation")
-                .param("reservationId", "1")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+    public void updateReservation_Confirm() throws Exception {
+        reservation.setState(ReservationStatus.CONFIRM);
+        given(service.updateReservation(anyLong(), any())).willReturn(reservation);
+        ObjectMapper mapper =  new ObjectMapper();
+        String input =  mapper.writeValueAsString(reservation);
+        mockMvc.perform(put("/hotels/{hotelId}/reservation", "1")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(input)
                 .with(user("Guest")
                         .password("password")
                         .roles("GUEST")))
@@ -151,15 +131,9 @@ public class HotelControllerTest {
     }
 
     @Test
-    public void getHotels() {
-
-    }
-
-    @Test
     public void getHotelById() throws Exception {
         given(service.getHotelById(anyLong())).willReturn(hotel);
-        mockMvc.perform(get("/hotel")
-                .param("hotelId", "1")
+        mockMvc.perform(get("/hotels/1")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .with(user("Guest")
                         .password("password")
@@ -168,4 +142,15 @@ public class HotelControllerTest {
 
     }
 
+    @Test
+    public void searchHotels() throws Exception {
+        given(service.searchHotelsByCity(anyString())).willReturn(Arrays.asList(hotel));
+        mockMvc.perform(get("/Pune/hotels")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .with(user("Guest")
+                        .password("password")
+                        .roles("GUEST")))
+                .andExpect(status().isOk());
+
+    }
 }
