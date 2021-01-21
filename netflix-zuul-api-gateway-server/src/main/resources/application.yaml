@@ -1,7 +1,7 @@
 zuul:
   routes:
     GuestService:
-      path : /GuestService/**
+      path : /guest-profile-service/**
       url : http://localhost:8100
     HotelService:
       path: /HotelService/**

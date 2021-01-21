@@ -1,7 +1,7 @@
 package com.crs.microservices.guestprofileservice.service;
 
-import com.crs.microservices.guestprofileservice.model.Card;
-import com.crs.microservices.guestprofileservice.model.Guest;
+import com.crs.microservices.guestprofileservice.vo.Card;
+import com.crs.microservices.guestprofileservice.vo.Guest;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -16,5 +16,4 @@ public interface GuestService {
 
     public List<Guest> getGuests(List<Long> guestIds ) throws EntityNotFoundException;
 
-    Guest addNewCard(long guestId, Card card);
 }

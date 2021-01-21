@@ -1,4 +1,4 @@
-package com.crs.microservices.guestprofileservice.model;
+package com.crs.microservices.guestprofileservice.vo;
 
 import java.util.ArrayList;
 import java.util.List;

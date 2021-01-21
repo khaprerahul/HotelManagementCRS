@@ -1,14 +1,15 @@
 package com.crs.microservices.guestprofileservice.controller;
 
-import com.crs.microservices.guestprofileservice.model.Card;
-import com.crs.microservices.guestprofileservice.model.Guest;
-import com.crs.microservices.guestprofileservice.model.CardImpl;
 import com.crs.microservices.guestprofileservice.service.GuestService;
+import com.crs.microservices.guestprofileservice.vo.Card;
+import com.crs.microservices.guestprofileservice.vo.Guest;
+import com.crs.microservices.guestprofileservice.vo.GuestImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.crs.microservices.guestprofileservice.model.GuestImpl;
+import com.crs.microservices.guestprofileservice.vo.CardImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,8 +31,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -54,26 +54,25 @@ public class GuestImplControllerTest {
                 .build();
     }
 
-    private Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","007878");
+    private Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","986989989");
     @Test
     public void getGuest_ShouldReturnGuest() throws Exception {
         given(guestService.getGuest(1L)).willReturn(guest);
-        mockMvc.perform(MockMvcRequestBuilders.get("/guest/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/guests/{guestId}", "1")
                 .with(user("Guest")
                         .password("password")
                         .roles("GUEST")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value("Michael Kong"))
-        .andExpect(jsonPath("email").value("michaelkong@hotmail.com"))
-        .andExpect(jsonPath("contactNumber").value("007878"));
-
+                .andExpect(jsonPath("email").value("michaelkong@hotmail.com"))
+                .andExpect(jsonPath("contactNumber").value("986989989"));
 
     }
 
     @Test
     public void getGuest_EntityNotFoundException() throws Exception {
         given(guestService.getGuest(anyLong())).willThrow(new EntityNotFoundException("Entity Not found"));
-        mockMvc.perform(MockMvcRequestBuilders.get("/guest/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/guests/{guestId}","1")
                 .with(user("Guest")
                         .password("password")
                         .roles("GUEST")))
@@ -83,26 +82,24 @@ public class GuestImplControllerTest {
 
     @Test
     public void addNewStay() throws Exception {
-        Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","007878");
+        Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","986989989");
         given(guestService.addStayByGuest(anyLong(), any())).willReturn(guest);
-        mockMvc.perform(MockMvcRequestBuilders.patch("/guest/addNewStay")
+        mockMvc.perform(MockMvcRequestBuilders.put("/guests/{guestId}/stay","1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("guestId", "1")
                 .param("reservationId","1")
                 .with(user("Guest")
                         .password("password")
                         .roles("GUEST")))
                 .andExpect(status().isOk());
-                //.andExpect(content().string("Stay added successfully."));
     }
 
     @Test
     public void addNewGuest() throws Exception {
-        Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","007878");
+        Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","986989989");
         given(guestService.addNewGuest(any())).willReturn(guest);
         ObjectMapper mapper =  new ObjectMapper();
         String json = mapper.writeValueAsString(guest);
-        mockMvc.perform(post("/guest/create")
+        mockMvc.perform(post("/guests")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(json)
                 .with(user("Guest")
@@ -114,10 +111,10 @@ public class GuestImplControllerTest {
 
     @Test
     public void getGuests() throws Exception {
-        Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","007878");
+        Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","986989989");
         given(guestService.getGuests(any())).willReturn(Arrays.asList(guest));
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/guest/getGuests")
+        MvcResult mvcResult = mockMvc.perform(get("/guests")
                 .param("guestId", "1")
                 .param("guestId", "2")
                 .with(user("Guest")

@@ -1,13 +1,13 @@
-package com.crs.microservices.guestprofileservice.service.implementation;
+package com.crs.microservices.guestprofileservice.service;
 
 import com.crs.microservices.guestprofileservice.entity.CardEntity;
 import com.crs.microservices.guestprofileservice.entity.GuestEntity;
-import com.crs.microservices.guestprofileservice.model.Card;
-import com.crs.microservices.guestprofileservice.model.Guest;
-import com.crs.microservices.guestprofileservice.model.CardImpl;
-import com.crs.microservices.guestprofileservice.model.GuestImpl;
-import com.crs.microservices.guestprofileservice.service.GuestService;
+import com.crs.microservices.guestprofileservice.vo.Card;
+import com.crs.microservices.guestprofileservice.vo.Guest;
+import com.crs.microservices.guestprofileservice.vo.CardImpl;
+import com.crs.microservices.guestprofileservice.vo.GuestImpl;
 import com.crs.microservices.guestprofileservice.repository.GuestRepositoryImpl;
+import com.crs.microservices.guestprofileservice.service.GuestService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,9 +37,9 @@ public class GuestImplServiceTest {
     @MockBean
     private GuestRepositoryImpl repository;
 
-    Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","007878");
-    GuestEntity guestEntity =  new GuestEntity(1L, "Michael Kong","michaelkong@hotmail.com", "007878");
-    GuestEntity guestEntity1 =  new GuestEntity(2L, "Michael Kong","michaelkong@hotmail.com", "007878");
+    Guest guest = new GuestImpl(1L, "Michael Kong","michaelkong@hotmail.com","986989989");
+    GuestEntity guestEntity =  new GuestEntity(1L, "Michael Kong","michaelkong@hotmail.com", "986989989");
+    GuestEntity guestEntity1 = new GuestEntity(2L, "Michael Kong","michaelkong@hotmail.com", "986989989");
     @Test
     @Order(1)
     public void addNewGuest() {

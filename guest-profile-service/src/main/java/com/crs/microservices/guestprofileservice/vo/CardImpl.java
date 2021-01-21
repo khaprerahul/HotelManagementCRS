@@ -1,4 +1,6 @@
-package com.crs.microservices.guestprofileservice.model;
+package com.crs.microservices.guestprofileservice.vo;
+
+import com.crs.microservices.guestprofileservice.vo.Card;
 
 
 public class CardImpl implements Card {

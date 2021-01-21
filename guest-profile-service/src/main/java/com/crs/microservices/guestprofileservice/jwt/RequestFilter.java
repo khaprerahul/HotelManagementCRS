@@ -1,4 +1,4 @@
-package com.crs.microservices.guestprofileservice.filters;
+package com.crs.microservices.guestprofileservice.jwt;
 
 import com.crs.microservices.guestprofileservice.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;

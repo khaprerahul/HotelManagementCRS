@@ -6,7 +6,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "guest")
-
 public class GuestEntity {
 
     @Id
@@ -15,14 +14,14 @@ public class GuestEntity {
     private String name;
     private String email;
     private String contactNumber;
-    private int rating;
+    private int ratting;
 
     @ElementCollection
     @CollectionTable(name = "Card", joinColumns = @JoinColumn(name = "guest_id"))
     private List<CardEntity> cards = new ArrayList();
 
     @ElementCollection
-    private List<Long> reservations = new ArrayList();
+    private List<Long> reservations =  new ArrayList();
 
     public List<Long> getReservations() {
         return reservations;
@@ -32,6 +31,10 @@ public class GuestEntity {
         this.reservations = reservations;
     }
 
+    /*@ElementCollection
+    @CollectionTable(name = "Stay", joinColumns = @JoinColumn(name = "guest_id"))
+    private List<StayDTO> stayList = new ArrayList();*/
+
     public List<CardEntity> getCards() {
         return cards;
     }
@@ -40,6 +43,14 @@ public class GuestEntity {
         this.cards = cards;
     }
 
+   /* public List<StayDTO> getStayList() {
+        return stayList;
+    }
+
+    public void setStayList(List<StayDTO> stayList) {
+        this.stayList = stayList;
+    }
+*/
     public Long getGuestId() {
         return guestId;
     }
@@ -72,16 +83,15 @@ public class GuestEntity {
         this.contactNumber = contactNumber;
     }
 
-    public int getRating() {
-        return rating;
+    public int getRatting() {
+        return ratting;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setRatting(int ratting) {
+        this.ratting = ratting;
     }
 
-    public GuestEntity() {
-    }
+    public GuestEntity(){}
 
     public GuestEntity(Long guestId, String name, String email, String contactNumber) {
         this.guestId = guestId;

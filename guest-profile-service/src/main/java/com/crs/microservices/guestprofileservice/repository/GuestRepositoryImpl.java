@@ -1,7 +1,7 @@
 package com.crs.microservices.guestprofileservice.repository;
 
-import com.crs.microservices.guestprofileservice.entity.GuestEntity;
 import com.crs.microservices.guestprofileservice.repository.GuestRepository;
+import com.crs.microservices.guestprofileservice.entity.GuestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

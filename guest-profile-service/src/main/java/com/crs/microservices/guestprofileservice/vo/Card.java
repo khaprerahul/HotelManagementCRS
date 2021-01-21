@@ -1,4 +1,4 @@
-package com.crs.microservices.guestprofileservice.model;
+package com.crs.microservices.guestprofileservice.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
