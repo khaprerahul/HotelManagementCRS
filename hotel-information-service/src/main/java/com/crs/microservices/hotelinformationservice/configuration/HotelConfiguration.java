@@ -1,7 +1,7 @@
 package com.crs.microservices.hotelinformationservice.configuration;
 
-import com.crs.microservices.hotelinformationservice.mapper.IMapper;
-import com.crs.microservices.hotelinformationservice.mapper.implementation.Mapper;
+import com.crs.microservices.hotelinformationservice.mapper.Mapper;
+import com.crs.microservices.hotelinformationservice.mapper.MapperImpl;
 import com.crs.microservices.hotelinformationservice.services.IHotelService;
 import com.crs.microservices.hotelinformationservice.services.HotelService;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +16,8 @@ public class HotelConfiguration {
     }
 
     @Bean
-    public IMapper getMapperForIHotelAndHotelDTO(){
-        return new Mapper();
+    public Mapper getMapperForIHotelAndHotelDTO(){
+        return new MapperImpl();
     }
 
 }

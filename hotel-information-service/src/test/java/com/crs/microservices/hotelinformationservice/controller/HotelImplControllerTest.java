@@ -1,6 +1,6 @@
 package com.crs.microservices.hotelinformationservice.controller;
 
-import com.crs.microservices.hotelinformationservice.model.*;
+import com.crs.microservices.hotelinformationservice.vo.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.crs.microservices.hotelinformationservice.services.IHotelService;
 import org.junit.Before;
@@ -38,9 +38,9 @@ public class HotelImplControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    private Address address = new AddressImpl(1L, "Lane no1", "Hanuman Nagar", "Pune","412308");
-    private IHotel hotel = new Hotel(1L, "City Inn", "1234567890",3, address);
-    private Reservation reservation = new ReservationImpl(new RoomImpl(),1L, new Date(), new Date(), 1L, ReservationStatus.REQUEST, "SINGLE");
+    private Address address = new AddressVO(1L, "Nagar Pune Road", "KedGaon", "Ahmednagar","414001");
+    private IHotel hotel = new Hotel(1L, "Hotel Yash Grand", "0241-2411429",1, address);
+    private Reservation reservation = new ReservationVO(new RoomVO(),1L, new Date(), new Date(), 1L, ReservationStatus.REQUESTED, "SINGLE");
 
     @Before
     public void setUp() {
@@ -116,7 +116,7 @@ public class HotelImplControllerTest {
 
     @Test
     public void updateReservation_Confirm() throws Exception {
-        reservation.setState(ReservationStatus.CONFIRM);
+        reservation.setState(ReservationStatus.CONFIRMED);
         given(service.updateReservation(anyLong(), any())).willReturn(reservation);
         ObjectMapper mapper =  new ObjectMapper();
         String input =  mapper.writeValueAsString(reservation);
@@ -142,15 +142,4 @@ public class HotelImplControllerTest {
 
     }
 
-    @Test
-    public void searchHotels() throws Exception {
-        given(service.searchHotelsByCity(anyString())).willReturn(Arrays.asList(hotel));
-        mockMvc.perform(get("/Pune/hotels")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .with(user("Guest")
-                        .password("password")
-                        .roles("GUEST")))
-                .andExpect(status().isOk());
-
-    }
 }

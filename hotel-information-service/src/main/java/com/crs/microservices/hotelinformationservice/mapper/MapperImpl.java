@@ -1,28 +1,27 @@
-package com.crs.microservices.hotelinformationservice.mapper.implementation;
+package com.crs.microservices.hotelinformationservice.mapper;
 
 import com.crs.microservices.hotelinformationservice.entity.AddressEntity;
 import com.crs.microservices.hotelinformationservice.entity.HotelEntity;
 import com.crs.microservices.hotelinformationservice.entity.ReservationEntity;
 import com.crs.microservices.hotelinformationservice.entity.RoomEntity;
-import com.crs.microservices.hotelinformationservice.model.*;
-import com.crs.microservices.hotelinformationservice.mapper.IMapper;
+import com.crs.microservices.hotelinformationservice.vo.*;
 
 import java.util.stream.Collectors;
-public class Mapper implements IMapper {
+public class MapperImpl implements Mapper {
     @Override
-    public HotelEntity mapIHotelToHotelDTO(IHotel hotel) {
+    public HotelEntity mapIHotelToHotelVO(IHotel hotel) {
         HotelEntity hotelEntity =  new HotelEntity();
         hotelEntity.setAddress(mapIAddressToAddressDTO(hotel.getAddress()));
         hotelEntity.setRooms(hotel.getRooms().stream().map(this::mapIRoomToRoomDTO).collect(Collectors.toList()));
-        hotelEntity.setReservations(hotel.getReservations().stream().map(this::mapIReservationToReservationDTO).collect(Collectors.toList()));
+        hotelEntity.setReservations(hotel.getReservations().stream().map(this::mapReservationToReservationVO).collect(Collectors.toList()));
         hotelEntity.setHotelId(hotel.getHotelId());
         hotelEntity.setName(hotel.getName());
         hotelEntity.setPhoneNumber(hotel.getPhoneNumber());
-        hotelEntity.setStarRatting(hotel.getStarRatting());
+        hotelEntity.setStarRatting(hotel.getRating());
         return hotelEntity;
     }
 
-    public ReservationEntity mapIReservationToReservationDTO(Reservation reservation){
+    public ReservationEntity mapReservationToReservationVO(Reservation reservation){
         ReservationEntity reservationEntity = new ReservationEntity();
         reservationEntity.setReservationId(reservation.getReservationId());
         reservationEntity.setState(reservation.getState().toString());
@@ -32,25 +31,6 @@ public class Mapper implements IMapper {
         reservationEntity.setRoom( mapIRoomToRoomDTO(reservation.getRoom()));
         return reservationEntity;
     }
-
-    /*@Override
-    public com.hotel.model.IGuest mapGuestToIGuest(com.hotel.proxy.model.IGuest guest) {
-        com.hotel.model.IGuest iGuest =  new Guest();
-        iGuest.setName(guest.getName());
-        iGuest.setGuestId(guest.getGuestId());
-        iGuest.setContactNumber(guest.getContactNumber());
-        iGuest.setEmail(guest.getEmail());
-        return iGuest;
-    }*/
-
-
-    /*private GuestDTO mapIGuestToGuestDTO(IGuest iGuest){
-        GuestDTO guestDTO = new GuestDTO();
-        guestDTO.setGuestId(iGuest.getGuestId());
-        guestDTO.setName(iGuest.getName());
-        guestDTO.setContactNumber(iGuest.getContactNumber());
-        return guestDTO;
-    }*/
 
     private RoomEntity mapIRoomToRoomDTO(Room room)
     {
@@ -73,22 +53,22 @@ public class Mapper implements IMapper {
     }
 
     @Override
-    public IHotel mapHotelDTOToIHotel(HotelEntity hotelEntity) {
+    public IHotel mapHotelVOToIHotel(HotelEntity hotelEntity) {
         IHotel iHotel =  new Hotel();
 
         iHotel.setHotelId(hotelEntity.getHotelId());
         iHotel.setName(hotelEntity.getName());
         iHotel.setPhoneNumber(hotelEntity.getPhoneNumber());
-        iHotel.setStarRatting(hotelEntity.getStarRatting());
+        iHotel.setRating(hotelEntity.getStarRatting());
         iHotel.setAddress(mapAddressDTOToIAddress(hotelEntity.getAddress()));
         iHotel.setRooms(hotelEntity.getRooms().stream().map(this::mapRoomDTOToIRoom).collect(Collectors.toList()));
-        iHotel.setReservations(hotelEntity.getReservations().stream().map(this::mapReservationDTOToIReservation).collect(Collectors.toList()));
+        iHotel.setReservations(hotelEntity.getReservations().stream().map(this::mapReservationVOToReservation).collect(Collectors.toList()));
         //iHotel.setReservationsByDate(hotelDTO.getReservationsByDate());
         return iHotel;
     }
 
     private Address mapAddressDTOToIAddress(AddressEntity addressEntity){
-        Address address = new AddressImpl();
+        Address address = new AddressVO();
         address.setAddressId(addressEntity.getAddressId());
         address.setArea(addressEntity.getArea());
         address.setCity(addressEntity.getCity());
@@ -98,7 +78,7 @@ public class Mapper implements IMapper {
     }
 
     private Room mapRoomDTOToIRoom(RoomEntity roomEntity){
-        Room room = new RoomImpl();
+        Room room = new RoomVO();
         if(roomEntity != null) {
             room.setRoomNo(roomEntity.getRoomNo());
             room.setRentPerNight(roomEntity.getRentPerNight());
@@ -107,18 +87,8 @@ public class Mapper implements IMapper {
         return room;
     }
 
-   /* private Long mapGuestDTOToIGuest(GuestDTO guestDTO){
-        Long iGuest = new Guest();
-        if(guestDTO != null) {
-            iGuest.setGuestId(guestDTO.getGuestId());
-            iGuest.setContactNumber(guestDTO.getContactNumber());
-            iGuest.setName(guestDTO.getName());
-        }
-        return iGuest;
-    }*/
-
-    public Reservation mapReservationDTOToIReservation(ReservationEntity reservationEntity){
-        Reservation reservation = new ReservationImpl();
+    public Reservation mapReservationVOToReservation(ReservationEntity reservationEntity){
+        Reservation reservation = new ReservationVO();
         reservation.setReservationId(reservationEntity.getReservationId());
         reservation.setState(ReservationStatus.valueOf(reservationEntity.getState()));
         reservation.setGuestId(reservationEntity.getGuestId());

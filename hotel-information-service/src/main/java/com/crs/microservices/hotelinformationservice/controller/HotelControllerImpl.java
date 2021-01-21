@@ -1,8 +1,8 @@
 package com.crs.microservices.hotelinformationservice.controller;
 
-import com.crs.microservices.hotelinformationservice.model.IHotel;
-import com.crs.microservices.hotelinformationservice.model.Reservation;
-import com.crs.microservices.hotelinformationservice.model.Hotel;
+import com.crs.microservices.hotelinformationservice.vo.Hotel;
+import com.crs.microservices.hotelinformationservice.vo.IHotel;
+import com.crs.microservices.hotelinformationservice.vo.Reservation;
 import com.crs.microservices.hotelinformationservice.services.IHotelService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,14 +42,14 @@ public class HotelControllerImpl implements HotelController {
     }
 
     @Override
-    public List<Reservation> getReservationByGuest(Long hotelId, Long guestId)
+    public List<Reservation> getReservationByGuestId(Long hotelId, Long guestId)
     {
         List<Reservation> reservations = service.getReservationByGuestIdPerHotel(hotelId, guestId);
         return reservations;
     }
 
     @Override
-    public List<IHotel> getHotels(List<Long> hotelIds){
+    public List<IHotel> getListOfHotels(List<Long> hotelIds){
         return service.getHotels(hotelIds);
     }
 
@@ -58,10 +58,5 @@ public class HotelControllerImpl implements HotelController {
         return service.getHotelById(hotelId);
     }
 
-    @Override
-    public List<IHotel> searchHotels(String cityName) {
-        List<IHotel> hotels = service.searchHotelsByCity(cityName);
-        return hotels;
-    }
 
 }

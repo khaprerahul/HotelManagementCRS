@@ -1,9 +1,9 @@
-package com.crs.microservices.hotelinformationservice.model;
+package com.crs.microservices.hotelinformationservice.vo;
 
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-@JsonDeserialize(as = AddressImpl.class)
+@JsonDeserialize(as = AddressVO.class)
 public interface Address {
     public String getStreet();
 

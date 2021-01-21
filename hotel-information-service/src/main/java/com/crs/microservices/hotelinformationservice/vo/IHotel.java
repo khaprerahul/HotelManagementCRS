@@ -1,4 +1,4 @@
-package com.crs.microservices.hotelinformationservice.model;
+package com.crs.microservices.hotelinformationservice.vo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Date;
@@ -14,8 +14,8 @@ public interface IHotel {
     public void setName(String name);
     public String getPhoneNumber();
     public void setPhoneNumber(String phoneNumber);
-    public int getStarRatting();
-    public void setStarRatting(int starRatting);
+    public int getRating();
+    public void setRating(int rating);
     public Address getAddress();
     public void setAddress(Address address);
     public List<Room> getRooms();

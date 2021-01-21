@@ -1,10 +1,10 @@
-package com.crs.microservices.hotelinformationservice.model;
+package com.crs.microservices.hotelinformationservice.vo;
 
 import java.util.Date;
 import java.util.Objects;
 
 
-public class ReservationImpl implements Reservation {
+public class ReservationVO implements Reservation {
     private Room room;
     private Long guestId;
     private Date fromDate;
@@ -29,7 +29,7 @@ public class ReservationImpl implements Reservation {
         this.state = state;
     }
 
-    public ReservationImpl(){}
+    public ReservationVO(){}
     public Room getRoom() {
         return room;
     }
@@ -74,7 +74,7 @@ public class ReservationImpl implements Reservation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ReservationImpl that = (ReservationImpl) o;
+        ReservationVO that = (ReservationVO) o;
         return Objects.equals(reservationId, that.reservationId);
     }
 
@@ -83,7 +83,7 @@ public class ReservationImpl implements Reservation {
         return Objects.hash(reservationId);
     }
 
-    public ReservationImpl(Room room, Long guestId, Date fromDate, Date toDate, Long reservationId, ReservationStatus state, String roomType) {
+    public ReservationVO(Room room, Long guestId, Date fromDate, Date toDate, Long reservationId, ReservationStatus state, String roomType) {
         this.room = room;
         this.guestId = guestId;
         this.fromDate = fromDate;

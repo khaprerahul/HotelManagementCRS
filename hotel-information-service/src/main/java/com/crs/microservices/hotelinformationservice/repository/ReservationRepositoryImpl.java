@@ -1,7 +1,6 @@
-package com.crs.microservices.hotelinformationservice.repository.implementation;
+package com.crs.microservices.hotelinformationservice.repository;
 
 import com.crs.microservices.hotelinformationservice.entity.ReservationEntity;
-import com.crs.microservices.hotelinformationservice.repository.IReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +11,7 @@ import java.util.Optional;
 public class ReservationRepositoryImpl {
 
     @Autowired
-    private IReservationRepository reservationRepository;
+    private ReservationRepository reservationRepository;
 
     public ReservationEntity findReservationById(Long id){
         Optional<ReservationEntity> reservationDTO = reservationRepository.findById(id);

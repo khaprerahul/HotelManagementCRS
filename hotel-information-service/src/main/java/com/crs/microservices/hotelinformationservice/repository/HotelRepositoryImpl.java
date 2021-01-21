@@ -1,7 +1,6 @@
-package com.crs.microservices.hotelinformationservice.repository.implementation;
+package com.crs.microservices.hotelinformationservice.repository;
 
 import com.crs.microservices.hotelinformationservice.entity.HotelEntity;
-import com.crs.microservices.hotelinformationservice.repository.IHotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +12,11 @@ import java.util.Optional;
 public class HotelRepositoryImpl {
 
     @Autowired
-    private IHotelRepository hotelRepository;
+    private HotelRepository hotelRepository;
 
     public HotelEntity findById(Long id) throws EntityNotFoundException {
         Optional<HotelEntity> hotelDTO = hotelRepository.findById(id);
-        return hotelDTO.isPresent() ? hotelDTO.get() :hotelDTO.orElseThrow(() ->new EntityNotFoundException("Hotel information not found :"+id));
+        return hotelDTO.isPresent() ? hotelDTO.get() :hotelDTO.orElseThrow(() ->new EntityNotFoundException("Hotel not found for id :"+id));
     }
 
     public HotelEntity save(HotelEntity hotel){

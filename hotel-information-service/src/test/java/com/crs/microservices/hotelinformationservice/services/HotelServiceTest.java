@@ -1,13 +1,13 @@
 package com.crs.microservices.hotelinformationservice.services;
 
 
-import com.crs.microservices.hotelinformationservice.model.*;
+import com.crs.microservices.hotelinformationservice.vo.*;
 import com.crs.microservices.hotelinformationservice.entity.AddressEntity;
 import com.crs.microservices.hotelinformationservice.entity.HotelEntity;
 import com.crs.microservices.hotelinformationservice.entity.ReservationEntity;
 import com.crs.microservices.hotelinformationservice.entity.RoomEntity;
-import com.crs.microservices.hotelinformationservice.repository.implementation.HotelRepositoryImpl;
-import com.crs.microservices.hotelinformationservice.repository.implementation.ReservationRepositoryImpl;
+import com.crs.microservices.hotelinformationservice.repository.HotelRepositoryImpl;
+import com.crs.microservices.hotelinformationservice.repository.ReservationRepositoryImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +40,15 @@ public class HotelServiceTest {
     @MockBean
     private ReservationRepositoryImpl reservationRepository;
 
-    private Address address = new AddressImpl(1L, "Lane no1", "Hanuman Nagar", "Pune","412308");
-    private IHotel hotel = new Hotel(1L, "City Inn", "1234567890",3, address);
-    private Reservation reservation = new ReservationImpl(new RoomImpl(),1L, new Date(), new Date(), 1L, ReservationStatus.REQUEST, "SINGLE");
+    private Address address = new AddressVO(1L, "Nagar Pune Road", "KedGaon", "Ahmednagar","414001");
+    private IHotel hotel = new Hotel(1L, "Hotel Yash Grand", "0241-2411429",2, address);
+    private Reservation reservation = new ReservationVO(new RoomVO(),1L, new Date(), new Date(), 1L, ReservationStatus.REQUESTED, "SINGLE");
 
-    private AddressEntity addressEntity =  new AddressEntity(1L, "Lane no1", "Hanuman Nagar", "Pune","412308");
-    private HotelEntity hotelEntity =  new HotelEntity(1L, "City Inn", "1234567890",3, addressEntity);
-    private RoomEntity roomEntity =  new RoomEntity(102, 1000, RoomType.SINGLE);
-    private ReservationEntity reservationEntity =  new ReservationEntity(new RoomEntity(),1L, new Date(), new Date(), 1L, "REQUEST", "SINGLE");
-    private ReservationEntity reservationEntity2 =  new ReservationEntity(new RoomEntity(),2L, new Date(), new Date(), 1L, "REQUEST", "SINGLE");
+    private AddressEntity addressEntity =  new AddressEntity(1L, "Nagar Pune Road", "KedGaon", "Ahmednagar","414001");
+    private HotelEntity hotelEntity =  new HotelEntity(1L, "Hotel Yash Grand", "0241-2411429",2, addressEntity);
+    private RoomEntity roomEntity =  new RoomEntity(102, 1000, RoomType.KING);
+    private ReservationEntity reservationEntity =  new ReservationEntity(new RoomEntity(),1L, new Date(), new Date(), 1L, "REQUESTED", "DELUXE");
+    private ReservationEntity reservationEntity2 =  new ReservationEntity(new RoomEntity(),2L, new Date(), new Date(), 1L, "REQUESTED", "DELUXE");
 
     @Test
     public void addNewHotel() {
@@ -92,7 +92,7 @@ public class HotelServiceTest {
         hotelEntity.getRooms().add(roomEntity);
         given(hotelRepository.findById(anyLong())).willReturn(hotelEntity);
         Reservation reservation = hotelService.reservationRequest(1L, this.reservation);
-        assertTrue(reservation.getState().equals(ReservationStatus.REQUEST));
+        assertTrue(reservation.getState().equals(ReservationStatus.REQUESTED));
     }
 
     @Test
@@ -122,15 +122,4 @@ public class HotelServiceTest {
         hotelService.getHotelById(1L);
     }
 
-    @Test
-    public void searchHotels() {
-        AddressEntity addressEntity1 =  new AddressEntity(2L, "Lane no1", "Hanuman Nagar", "Kolhapur","412308");
-        HotelEntity hotelEntity1 =  new HotelEntity(2L, "City Inn", "1234567890",3, addressEntity1);
-        given(hotelRepository.getAllHotels()).willReturn(Arrays.asList(hotelEntity, hotelEntity1));
-        List<IHotel> hotels = hotelService.searchHotelsByCity("Pune");
-
-        assertEquals(hotels.size(), 1);
-        assertFalse(hotels.stream().filter(h -> !h.getAddress().getCity().equals("Pune")).findFirst().isPresent());
-
-    }
 }

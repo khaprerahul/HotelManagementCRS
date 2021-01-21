@@ -1,6 +1,6 @@
 package com.crs.microservices.hotelinformationservice.entity;
 
-import com.crs.microservices.hotelinformationservice.model.RoomType;
+import com.crs.microservices.hotelinformationservice.vo.RoomType;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Table;

@@ -1,8 +1,8 @@
-package com.crs.microservices.hotelinformationservice.model;
+package com.crs.microservices.hotelinformationservice.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-@JsonDeserialize(as = RoomImpl.class)
+@JsonDeserialize(as = RoomVO.class)
 public interface Room {
     public int getRoomNo();
 

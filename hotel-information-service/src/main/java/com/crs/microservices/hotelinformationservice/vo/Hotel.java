@@ -1,4 +1,4 @@
-package com.crs.microservices.hotelinformationservice.model;
+package com.crs.microservices.hotelinformationservice.vo;
 
 import java.util.*;
 
@@ -8,7 +8,7 @@ public class Hotel implements IHotel {
     private Long hotelId;
     private String name;
     private String phoneNumber;
-    private int starRatting;
+    private int rating;
     private Address address;
     private List<Room> rooms = new ArrayList() ;
     private List<Reservation> reservations = new ArrayList();
@@ -42,11 +42,11 @@ public class Hotel implements IHotel {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    public int getStarRatting() {
-        return starRatting;
+    public int getRating() {
+        return rating;
     }
-    public void setStarRatting(int starRatting) {
-        this.starRatting = starRatting;
+    public void setRating(int rating) {
+        this.rating = rating;
     }
     public Address getAddress() {
         return address;
@@ -68,11 +68,11 @@ public class Hotel implements IHotel {
 
     }
 
-    public Hotel(Long hotelId, String name, String phoneNumber, int starRatting, Address address) {
+    public Hotel(Long hotelId, String name, String phoneNumber, int rating, Address address) {
         this.hotelId = hotelId;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.starRatting = starRatting;
+        this.rating = rating;
         this.address = address;
     }
 
@@ -82,7 +82,7 @@ public class Hotel implements IHotel {
                 "hotelId=" + hotelId +
                 ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", starRatting=" + starRatting +
+                ", starRatting=" + rating +
                 ", address=" + address +
                 ", rooms=" + rooms +
                 ", reservations=" + reservations +

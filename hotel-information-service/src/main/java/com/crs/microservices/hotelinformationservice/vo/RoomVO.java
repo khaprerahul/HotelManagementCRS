@@ -1,8 +1,8 @@
-package com.crs.microservices.hotelinformationservice.model;
+package com.crs.microservices.hotelinformationservice.vo;
 
 import java.util.Objects;
 
-public class RoomImpl implements Room {
+public class RoomVO implements Room {
 
     private int roomNo;
     private double rentPerNight;
@@ -14,7 +14,7 @@ public class RoomImpl implements Room {
     /*@JoinColumn(name = "guestId")
     private Guest guest;*/
 
-    public RoomImpl(){}
+    public RoomVO(){}
     public boolean isOccupiedCurrently() {
         return isOccupiedCurrently;
     }
@@ -70,8 +70,8 @@ public class RoomImpl implements Room {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RoomImpl roomImpl = (RoomImpl) o;
-        return roomNo == roomImpl.roomNo;
+        RoomVO roomVO = (RoomVO) o;
+        return roomNo == roomVO.roomNo;
     }
 
     @Override

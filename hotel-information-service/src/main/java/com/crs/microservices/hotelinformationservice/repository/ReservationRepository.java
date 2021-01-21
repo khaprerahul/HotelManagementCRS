@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IReservationRepository extends CrudRepository<ReservationEntity, Long> {
+public interface ReservationRepository extends CrudRepository<ReservationEntity, Long> {
 }

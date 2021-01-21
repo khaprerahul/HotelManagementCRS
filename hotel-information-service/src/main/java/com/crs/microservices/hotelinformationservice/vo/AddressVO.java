@@ -1,6 +1,6 @@
-package com.crs.microservices.hotelinformationservice.model;
+package com.crs.microservices.hotelinformationservice.vo;
 
-public class AddressImpl implements Address {
+public class AddressVO implements Address {
 
     private Long addressId;
     private String street;
@@ -16,7 +16,7 @@ public class AddressImpl implements Address {
         this.pin = pin;
     }
 
-    public AddressImpl(){}
+    public AddressVO(){}
 
     public String getStreet() {
         return street;
@@ -50,7 +50,7 @@ public class AddressImpl implements Address {
         this.city = city;
     }
 
-    public AddressImpl(long addressId, String street, String area, String city, String pin) {
+    public AddressVO(long addressId, String street, String area, String city, String pin) {
         this.addressId = addressId;
         this.street = street;
         this.area = area;

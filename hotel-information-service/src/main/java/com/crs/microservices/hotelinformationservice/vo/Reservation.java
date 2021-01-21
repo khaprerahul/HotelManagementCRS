@@ -1,10 +1,10 @@
-package com.crs.microservices.hotelinformationservice.model;
+package com.crs.microservices.hotelinformationservice.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Date;
 
-@JsonDeserialize(as = ReservationImpl.class)
+@JsonDeserialize(as = ReservationVO.class)
 public interface Reservation {
     java.lang.Long getReservationId();
     void setState(ReservationStatus state);

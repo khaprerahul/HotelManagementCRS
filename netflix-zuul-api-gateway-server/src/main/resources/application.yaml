@@ -4,9 +4,9 @@ zuul:
       path : /guest-profile-service/**
       url : http://localhost:8100
     HotelService:
-      path: /HotelService/**
+      path: /hotel-information-service/**
       url: http://localhost:8200
     ReservationService:
-      path: /ReservationService/**
+      path: /hotel-reservation-service/**
       url: http://localhost:8300
   sensitive-headers: Cookie,Set-Cookie
