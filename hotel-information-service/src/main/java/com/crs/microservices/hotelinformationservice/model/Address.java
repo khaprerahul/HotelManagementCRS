@@ -1,59 +1,28 @@
 package com.crs.microservices.hotelinformationservice.model;
 
-public class Address implements IAddress {
 
-	private Long addressId;
-    private String street;
-    private String area;
-    private String city;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-    public Address(){}
+@JsonDeserialize(as = AddressImpl.class)
+public interface Address {
+    public String getStreet();
 
-    public String getStreet() {
-        return street;
-    }
+    public String getPin();
 
-    public Long getAddressId() {
-        return addressId;
-    }
+    public void setPin(String pin);
 
-    public void setAddressId(Long addressId) {
-        this.addressId = addressId;
-    }
+    public Long getAddressId();
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
+    public void setAddressId(Long addressId);
 
-    public String getArea() {
-        return area;
-    }
+    public void setStreet(String street);
 
-    public void setArea(String area) {
-        this.area = area;
-    }
+    public String getArea();
 
-    public String getCity() {
-        return city;
-    }
+    public void setArea(String area);
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+    public String getCity();
 
-    /*public Address(String street, String area, String city) {
-        this.street = street;
-        this.area = area;
-        this.city = city;
-    }*/
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "street='" + street + '\'' +
-                ", area='" + area + '\'' +
-                ", city='" + city + '\'' +
-                '}';
-    }
+    public void setCity(String city);
 
 }

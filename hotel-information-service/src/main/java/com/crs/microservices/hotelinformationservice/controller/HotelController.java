@@ -1,83 +1,80 @@
 package com.crs.microservices.hotelinformationservice.controller;
 
-import java.net.URI;
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
-
+import com.crs.microservices.hotelinformationservice.model.IHotel;
+import com.crs.microservices.hotelinformationservice.model.Reservation;
+import com.crs.microservices.hotelinformationservice.model.Hotel;
+import com.crs.microservices.hotelinformationservice.services.HotelService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.crs.microservices.hotelinformationservice.model.Hotel;
-import com.crs.microservices.hotelinformationservice.model.IHotel;
-import com.crs.microservices.hotelinformationservice.model.IReservation;
-import com.crs.microservices.hotelinformationservice.services.HotelService;
+import javax.inject.Inject;
+import java.net.URI;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/hotel")
-public class HotelController {
-	@Inject
-	private HotelService service;
+public class HotelController{
 
-	@PostMapping("/addHotel")
-	@PreAuthorize("hasRole('HOTEL')")
-	public ResponseEntity<IHotel> addNewHotel(@RequestBody Hotel hotel) {
-		IHotel response = service.addNewHotel(hotel);
-		URI uri = URI.create(String.format("/hotel/%s", response.getHotelId()));
-		return ResponseEntity.created(uri).body(response);
-	}
+    @Inject
+    private HotelService service;
 
-	@PostMapping("/reservation")
-	@PreAuthorize("hasRole('HOTEL')")
-	public String reservationRequest(@RequestBody IReservation reservation, @RequestParam("hotelId") Long hotelId) {
-		return service.reservationRequest(hotelId, reservation);
-	}
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('HOTEL')")
+    public ResponseEntity<IHotel> addNewHotel(@RequestBody Hotel hotel)
+    {
+        IHotel response = service.addNewHotel(hotel);
+        URI uri = URI.create(String.format("/hotel/%s", response.getHotelId()));
+        return ResponseEntity.created(uri).body(response);
+    }
 
-	@PatchMapping("/cancelReservation")
-	public ResponseEntity<String> cancelReservation(@RequestParam("hotelId") Long hotelId,
-			@RequestParam("reservationId") Long reservationId) {
-		return ResponseEntity.accepted().body(service.cancelReservation(hotelId, reservationId));
-	}
+    @RequestMapping(method = RequestMethod.POST, value = "/reservation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('GUEST')")
+    public ResponseEntity<Reservation> reservationRequest(@RequestBody Reservation reservation, @RequestParam("hotelId") Long hotelId){
+        return ResponseEntity.ok(service.reservationRequest(hotelId, reservation)) ;
+    }
 
-	@GetMapping("/reservationsByHotel")
-	public ResponseEntity<List<IReservation>> getAllReservationsByHotelId(@RequestParam("hotelId") Long hotelId) {
-		return ResponseEntity.ok(service.getAllReservationsByHotelId(hotelId));
-	}
+    @RequestMapping(value = "/cancelReservation", method = RequestMethod.PATCH)
+    @PreAuthorize("hasRole('GUEST')")
+    public ResponseEntity<Reservation> cancelReservation(@RequestParam("hotelId") Long hotelId, @RequestParam("reservationId") Long reservationId){
+        return ResponseEntity.accepted().body(service.cancelReservation(hotelId, reservationId));
+    }
 
-	@GetMapping("/reservationsByGuest")
-	public List<IReservation> getReservationByGuest(@RequestParam("hotelId") Long hotelId,
-			@RequestParam("guestId") Long guestId) {
-		return service.getReservationByGuestIdPerHotel(hotelId, guestId);
-	}
+    @RequestMapping(value = "/reservationsByHotel", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('HOTEL')")
+    public ResponseEntity<List<Reservation>> getAllReservationsByHotelId(@RequestParam("hotelId") Long hotelId){
+        return ResponseEntity.ok(service.getAllReservationsByHotelId(hotelId));
+    }
 
-	@PatchMapping("/confirmReservation")
-	public String confirmReservation(@RequestParam("reservationId") Long reservationId) {
-		return service.confirmReservation(reservationId);
-	}
+    @RequestMapping(value = "/reservationsByGuest", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('HOTEL')")
+    public List<Reservation> getReservationByGuest(@RequestParam("hotelId") Long hotelId, @RequestParam("guestId") Long guestId)
+    {
+        List<Reservation> reservations = service.getReservationByGuestIdPerHotel(hotelId, guestId);
+        return reservations;
+    }
 
-	@GetMapping("/getHotels")
-	public List<IHotel> getHotels(@RequestParam("hotelIds") List<Long> hotelIds) {
-		return service.getHotels(hotelIds);
-	}
+    @RequestMapping(value = "/confirmReservation" , method = RequestMethod.PATCH)
+    @PreAuthorize("hasRole('GUEST')")
+    public ResponseEntity<Reservation> confirmReservation(@RequestParam("reservationId") Long reservationId){
+        return ResponseEntity.accepted().body(service.confirmReservation(reservationId));
+    }
 
-	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public IHotel getHotelById(@RequestParam("hotelId") Long hotelId) {
-		return service.getHotelById(hotelId);
-	}
+    @RequestMapping(value = "/getHotels", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<IHotel> getHotels(@RequestParam("hotelIds") List<Long> hotelIds){
+        return service.getHotels(hotelIds);
+    }
 
-	@GetMapping("/searchHotels")
-	public List<IHotel> searchHotels(@RequestParam String cityName, @RequestParam Date fromDate,
-			@RequestParam Date toDate, String roomType) {
-		return service.searchHotels(cityName, fromDate, toDate, roomType);
-	}
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('GUEST')")
+    public IHotel getHotelById(@RequestParam("hotelId") Long hotelId){
+        return service.getHotelById(hotelId);
+    }
+
 }

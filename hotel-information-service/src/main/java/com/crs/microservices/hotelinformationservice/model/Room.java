@@ -1,82 +1,19 @@
 package com.crs.microservices.hotelinformationservice.model;
 
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-public class Room implements IRoom{
+@JsonDeserialize(as = RoomImpl.class)
+public interface Room {
+    public int getRoomNo();
 
-	private int roomNo;
-    private double rentPerNight;
-    private RoomType roomType;
+    public void setRoomNo(int roomNo);
 
-    //private List<Date> occupiedDates = new ArrayList();
-    private boolean isOccupiedCurrently = false;
+    public double getRentPerNight();
 
-    /*@JoinColumn(name = "guestId")
-    private Guest guest;*/
+    public void setRentPerNight(double rentPerNight);
 
-    public Room(){}
-    public boolean isOccupiedCurrently() {
-        return isOccupiedCurrently;
-    }
+    public RoomType getRoomType();
 
-    public void setOccupiedCurrently(boolean occupiedCurrently) {
-        isOccupiedCurrently = occupiedCurrently;
-    }
-
-  /*  public Guest getGuest() {
-        return guest;
-    }
-
-    public void setGuest(Guest guest) {
-        if(!this.isOccupiedCurrently)
-            this.guest = guest;
-    }*/
-
-    public int getRoomNo() {
-        return roomNo;
-    }
-
-    public void setRoomNo(int roomNo) {
-        this.roomNo = roomNo;
-    }
-
-    public double getRentPerNight() {
-        return rentPerNight;
-    }
-
-    public void setRentPerNight(double rentPerNight) {
-        this.rentPerNight = rentPerNight;
-    }
-
-    public RoomType getRoomType() {
-        return roomType;
-    }
-
-    public void setRoomType(RoomType roomType) {
-        this.roomType = roomType;
-    }
-
-/*
-    public List<Date> getOccupiedDates() {
-        return occupiedDates;
-    }
-
-    public void setOccupiedDates(List<Date> occupiedDates) {
-        this.occupiedDates = occupiedDates;
-    }
-*/
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Room room = (Room) o;
-        return roomNo == room.roomNo;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(roomNo);
-    }
+    public void setRoomType(RoomType roomType);
 
 }

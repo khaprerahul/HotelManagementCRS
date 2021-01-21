@@ -1,63 +1,63 @@
 package com.crs.microservices.hotelinformationservice.jwt;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
+@Service
+public class JwtUtil {
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+    private String SECRET_KEY = "SecuritySecret";
 
-@Component
-public class JWTUtil {
+    public String generateToken(UserDetails userDetails){
+        Map<String, Object> claims =  new HashMap();
+        claims.put("Authorities", userDetails.getAuthorities());
+        return createToken(claims, userDetails.getUsername());
+    }
 
-	private static final String SECRET_KEY = "SecuritySecret";
+    private String createToken(Map<String, Object> claims, String subject){
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
 
-	public String generateToken(UserDetails userDetails) {
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("Authorities", userDetails.getAuthorities());
-		return createToken(claims, userDetails.getUsername());
-	}
+    private Claims extractAllClaims(String token){
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    }
 
-	private String createToken(Map<String, Object> claims, String subject) {
-		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
-				.signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
-	}
+    public <T> T extractClaim(String token, Function<Claims, T> claimResolver){
+        final Claims claims = extractAllClaims(token);
+        return claimResolver.apply(claims);
+    }
 
-	private Claims extractAllClaims(String token) {
-		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-	}
+    public String extractUsername(String token){
+        return extractClaim(token, Claims::getSubject);
+    }
 
-	public <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
-		final Claims claims = extractAllClaims(token);
-		return claimResolver.apply(claims);
-	}
+    public Date extractExpirationDate(String token){
+        return extractClaim(token, Claims::getExpiration);
+    }
 
-	public String extractUsername(String token) {
-		return extractClaim(token, Claims::getSubject);
-	}
+    private boolean isTokenExpired(String token){
+        return extractExpirationDate(token).before(new Date());
+    }
 
-	public Date extractExpirationDate(String token) {
-		return extractClaim(token, Claims::getExpiration);
-	}
+    public boolean isValidToken(String token, UserDetails userDetails){
+        String userName = extractUsername(token);
+        return userDetails.getUsername().equals(userName) && !isTokenExpired(token);
+    }
 
-	private boolean isTokenExpired(String token) {
-		return extractExpirationDate(token).before(new Date());
-	}
-
-	public boolean isValidToken(String token, UserDetails userDetails) {
-		String userName = extractUsername(token);
-		return userDetails.getUsername().equals(userName) && !isTokenExpired(token);
-	}
-
-	public Collection<? extends GrantedAuthority> extractAuthorities(String token) {
-		return extractClaim(token, claims -> claims.get("authorities", Collection.class));
-	}
+    public Collection<? extends GrantedAuthority> extractAuthorities(String token){
+        return extractClaim(token, claims -> claims.get("authorities",Collection.class));
+    }
 }
