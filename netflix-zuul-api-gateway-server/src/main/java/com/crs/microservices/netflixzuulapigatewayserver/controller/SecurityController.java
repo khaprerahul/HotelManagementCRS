@@ -18,7 +18,7 @@ import com.crs.microservices.netflixzuulapigatewayserver.model.AuthenticationRes
 import com.crs.microservices.netflixzuulapigatewayserver.service.UserDetailsServiceImpl;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/api/v1")
 public class SecurityController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -34,7 +34,7 @@ public class SecurityController {
 		return "Hello There !!!!";
 	}
 
-	@RequestMapping(value = "/getToken", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/token", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request)
 			throws Exception {
 		try {
