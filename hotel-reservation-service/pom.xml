@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.crs.microservices</groupId>
-	<artifactId>proxyHotel-reservation-service</artifactId>
+	<artifactId>hotel-reservation-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>proxyHotel-reservation-service</name>
 	<description>Demo project for Spring Boot</description>

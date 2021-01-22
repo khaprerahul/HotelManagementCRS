@@ -1,6 +1,5 @@
 package com.crs.microservices.guestprofileservice.jwt;
 
-import com.crs.microservices.guestprofileservice.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +20,7 @@ import java.util.*;
 public class RequestFilter extends OncePerRequestFilter
 {
     @Autowired
-    private JwtUtil jwtUtil;
+    private JWTUtil jwtUtil;
 
     private final String BEARER = "Bearer ";
 
